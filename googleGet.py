@@ -29,11 +29,12 @@ req["appver"] = version
 req["pver"] = "3.0"
 req["apikey"] = gsb_api_key
 
-"""send each URL to google"""
+
 def sendUrl(sentCount):
+    """send each URL to google"""
     while (sentCount < count):
-        sentCount+=1
-        url=text.pop(0)
+        sentCount += 1
+        url = text.pop(0)
         #add url to get parameters
         req["url"] = url
         params = urlencode(req)
@@ -44,31 +45,36 @@ def sendUrl(sentCount):
         #warning: google returns invalid URLs as ""
         if result == "":
             print (str(sentCount) + " safe: " + url)
-            resultFile=("safe: " + url + "\n")
+            resultFile = ("safe: " + url + "\n")
         else:
             print (str(sentCount) + " " + start + result + end + ": " + url)
-            resultFile=(result + ": " + url + "\n")
+            resultFile = (result + ": " + url + "\n")
         saveToFile(resultFile)
         if sentCount == count:
             print("Analyzing results.")
             analyzeFile()
 
-"""save each result to file"""
+
 def saveToFile(result):
+    """save each result to file"""
     log = open("getLog{0}.txt".format(dateTimeNow), "a")
     log.write(result)
     log.close()
 
-"""when all URLs are tested, save analysis to file"""
+
 def analyzeFile():
+    """when all URLs are tested, save analysis to file"""
     totalMalware = 0
     totalExc = 0
     logFile = open("getLog{0}.txt".format(dateTimeNow), "r+")
-    #print("Analyzing and saving to file.") 
+    #print("Analyzing and saving to file.")
     tempLog = logFile.read()
     for line in tempLog.splitlines()[:]:
-        if "malware" in line: totalMalware+=1
-    analysis="\nMalware Associated URLs: " + str((totalMalware / count) * 100) + "% " + str(totalMalware) + " / " + str(count) +"\nValid URLs: " + str(((count - totalMalware) / count) * 100) + "% " + str(count - totalMalware) + " / " + str(count)
+        if "malware" in line:
+            totalMalware += 1
+    analysis = ("\nMalware Associated URLs: " + str((totalMalware / count) * 100) + "% " +
+                str(totalMalware) + " / " + str(count) + "\nValid URLs: " +
+                str(((count - totalMalware) / count) * 100) + "% " + str(count - totalMalware) + " / " + str(count))
     saveToFile(analysis)
 
 #begin
